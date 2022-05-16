@@ -43,6 +43,13 @@ struct var : public std::variant<
     var(const T& t) : base{ wrapper<T>{t} }{}
 };
 
+struct _var : public wrapper< std::variant<
+    int,
+    double,
+    std::vector<_var>,
+    std::map<_var, _var>
+> >{};
+
 int main() {
     var v1{ int{1} };
     var v2{ double{2.0} };
@@ -51,4 +58,9 @@ int main() {
     std::map<var, var> m{};
     m[v1] = v2;
     var v4(m);
+
+    _var _v1{{int{1}}};
+    _var _v2{{double{2.0}}};
+    _var _v3{{std::vector<_var>{_v1, _v2}}};
+    _var _v4{{std::map<_var, _var>{}}};
 }
